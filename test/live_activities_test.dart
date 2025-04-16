@@ -26,6 +26,14 @@ class MockLiveActivitiesPlatform
   }
 
   @override
+  Future<String?> createAltActivity(
+    Map<String, dynamic> data, {
+    bool removeWhenAppIsKilled = false,
+    Duration? staleIn,
+  }) {
+    return Future.value('ACTIVITY_ID');
+  }
+
   Future endActivity(String activityId) {
     return Future.value();
   }
@@ -47,15 +55,17 @@ class MockLiveActivitiesPlatform
 
   @override
   Stream<UrlSchemeData> urlSchemeStream() {
-    return Stream.value(UrlSchemeData(
-      url: 'URL',
-      scheme: 'SCHEME',
-      host: 'HOST',
-      path: 'PATH',
-      queryParameters: [
-        {'name': 'NAME', 'value': 'VALUE'},
-      ],
-    ));
+    return Stream.value(
+      UrlSchemeData(
+        url: 'URL',
+        scheme: 'SCHEME',
+        host: 'HOST',
+        path: 'PATH',
+        queryParameters: [
+          {'name': 'NAME', 'value': 'VALUE'},
+        ],
+      ),
+    );
   }
 
   @override
@@ -79,8 +89,20 @@ class MockLiveActivitiesPlatform
   }
 
   @override
-  Future updateActivity(String activityId, Map<String, dynamic> data,
-      [AlertConfig? alertConfig]) {
+  Future updateActivity(
+    String activityId,
+    Map<String, dynamic> data, [
+    AlertConfig? alertConfig,
+  ]) {
+    return Future.value();
+  }
+
+  @override
+  Future updateAltActivity(
+    String activityId,
+    Map<String, dynamic> data, [
+    AlertConfig? alertConfig,
+  ]) {
     return Future.value();
   }
 
@@ -100,6 +122,15 @@ class MockLiveActivitiesPlatform
   }
 
   @override
+  Future createOrUpdateAltActivity(
+    String customId,
+    Map<String, dynamic> data, {
+    bool removeWhenAppIsKilled = false,
+    Duration? staleIn,
+  }) {
+    return Future.value();
+  }
+
   Future<bool> allowsPushStart() {
     return Future.value(true);
   }
@@ -129,8 +160,15 @@ void main() {
     expect(await liveActivitiesPlugin.endActivity('ACTIVITY_ID'), null);
   });
 
-  test('updateActivity', () async {
+  test('', () async {
     expect(await liveActivitiesPlugin.updateActivity('ACTIVITY_ID', {}), null);
+  });
+
+  test('', () async {
+    expect(
+      await liveActivitiesPlugin.updateAltActivity('ACTIVITY_ID', {}),
+      null,
+    );
   });
 
   test('endAllActivities', () async {
@@ -169,10 +207,7 @@ void main() {
   });
 
   test('getPushToken', () async {
-    expect(
-      await liveActivitiesPlugin.getPushToken('PUSH_TOKEN'),
-      'PUSH_TOKEN',
-    );
+    expect(await liveActivitiesPlugin.getPushToken('PUSH_TOKEN'), 'PUSH_TOKEN');
   });
 
   test('activityUpdateStream', () async {
@@ -195,8 +230,9 @@ void main() {
 
     expect(wrongMappingIsNull, null);
 
-    final correctMappingNotNull =
-        result.mapOrNull(active: (state) => state.activityToken);
+    final correctMappingNotNull = result.mapOrNull(
+      active: (state) => state.activityToken,
+    );
 
     expect(correctMappingNotNull, 'ACTIVITY_TOKEN');
   });

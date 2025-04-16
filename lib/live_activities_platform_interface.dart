@@ -26,10 +26,7 @@ abstract class LiveActivitiesPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future init(
-    String appGroupId, {
-    String? urlScheme,
-  }) {
+  Future init(String appGroupId, {String? urlScheme}) {
     throw UnimplementedError('init() has not been implemented.');
   }
 
@@ -41,9 +38,28 @@ abstract class LiveActivitiesPlatform extends PlatformInterface {
     throw UnimplementedError('createActivity() has not been implemented.');
   }
 
-  Future updateActivity(String activityId, Map<String, dynamic> data,
-      [AlertConfig? alertConfig]) {
+  Future<String?> createAltActivity(
+    Map<String, dynamic> data, {
+    bool removeWhenAppIsKilled = false,
+    Duration? staleIn,
+  }) {
+    throw UnimplementedError('createAltActivity() has not been implemented.');
+  }
+
+  Future updateActivity(
+    String activityId,
+    Map<String, dynamic> data, [
+    AlertConfig? alertConfig,
+  ]) {
     throw UnimplementedError('updateActivity() has not been implemented.');
+  }
+
+  Future updateAltActivity(
+    String activityId,
+    Map<String, dynamic> data, [
+    AlertConfig? alertConfig,
+  ]) {
+    throw UnimplementedError('updateAltActivity() has not been implemented.');
   }
 
   Future createOrUpdateActivity(
@@ -53,7 +69,19 @@ abstract class LiveActivitiesPlatform extends PlatformInterface {
     Duration? staleIn,
   }) {
     throw UnimplementedError(
-        'createOrUpdateActivity() has not been implemented.');
+      'createOrUpdateActivity() has not been implemented.',
+    );
+  }
+
+  Future createOrUpdateAltActivity(
+    String customId,
+    Map<String, dynamic> data, {
+    bool removeWhenAppIsKilled = false,
+    Duration? staleIn,
+  }) {
+    throw UnimplementedError(
+      'createOrUpdateAltActivity() has not been implemented.',
+    );
   }
 
   Future endActivity(String activityId) {
@@ -74,12 +102,14 @@ abstract class LiveActivitiesPlatform extends PlatformInterface {
 
   Future<bool> areActivitiesEnabled() {
     throw UnimplementedError(
-        'areActivitiesEnabled() has not been implemented.');
+      'areActivitiesEnabled() has not been implemented.',
+    );
   }
 
   Future<bool> allowsPushStart() {
     throw UnimplementedError(
-        'supportsStartActivities() has not been implemented.');
+      'supportsStartActivities() has not been implemented.',
+    );
   }
 
   Stream<UrlSchemeData> urlSchemeStream() {
@@ -98,5 +128,7 @@ abstract class LiveActivitiesPlatform extends PlatformInterface {
       throw UnimplementedError('pushTokenUpdates has not been implemented');
 
   Stream<String> get pushToStartTokenUpdateStream =>
-      throw UnimplementedError('pushToStartTokenUpdateStream has not been implemented');
+      throw UnimplementedError(
+        'pushToStartTokenUpdateStream has not been implemented',
+      );
 }

@@ -43,15 +43,59 @@ class LiveActivities {
     );
   }
 
+  /// Create an iOS 16.1+ live activity.
+  /// When the activity is created, an activity id is returned.
+  /// Data is a map of key/value pairs that will be transmitted to your iOS extension widget.
+  /// Files like images are limited by size,
+  /// be sure to pass only small file size (you can use ```resizeFactor``` for images).
+  ///
+  /// [StaleIn] indicates if a StaleDate should be added to the activity. If the value is null or the Duration
+  /// is less than 1 minute then no staleDate will be used. The parameter only affects the live activity on
+  Future<String?> createAltActivity(
+    Map<String, dynamic> data, {
+    bool removeWhenAppIsKilled = false,
+    Duration? staleIn,
+  }) async {
+    await _appGroupsFileService.sendFilesToAppGroups(data);
+    return LiveActivitiesPlatform.instance.createAltActivity(
+      data,
+      removeWhenAppIsKilled: removeWhenAppIsKilled,
+      staleIn: staleIn,
+    );
+  }
+
   /// Update an iOS 16.1+ live activity.
   /// You can get an activity id by calling [createActivity].
   /// Data is a map of key/value pairs that will be transmitted to your iOS extension widget.
   /// Map is limited to String keys and values for now.
-  Future updateActivity(String activityId, Map<String, dynamic> data,
-      [AlertConfig? alertConfig]) async {
+  Future updateActivity(
+    String activityId,
+    Map<String, dynamic> data, [
+    AlertConfig? alertConfig,
+  ]) async {
     await _appGroupsFileService.sendFilesToAppGroups(data);
-    return LiveActivitiesPlatform.instance
-        .updateActivity(activityId, data, alertConfig);
+    return LiveActivitiesPlatform.instance.updateActivity(
+      activityId,
+      data,
+      alertConfig,
+    );
+  }
+
+  /// Update an iOS 16.1+ live activity.
+  /// You can get an activity id by calling [createActivity].
+  /// Data is a map of key/value pairs that will be transmitted to your iOS extension widget.
+  /// Map is limited to String keys and values for now.
+  Future updateAltActivity(
+    String activityId,
+    Map<String, dynamic> data, [
+    AlertConfig? alertConfig,
+  ]) async {
+    await _appGroupsFileService.sendFilesToAppGroups(data);
+    return LiveActivitiesPlatform.instance.updateAltActivity(
+      activityId,
+      data,
+      alertConfig,
+    );
   }
 
   Future createOrUpdateActivity(
@@ -62,8 +106,26 @@ class LiveActivities {
   }) async {
     await _appGroupsFileService.sendFilesToAppGroups(data);
     return LiveActivitiesPlatform.instance.createOrUpdateActivity(
-        customId, data,
-        removeWhenAppIsKilled: removeWhenAppIsKilled, staleIn: staleIn);
+      customId,
+      data,
+      removeWhenAppIsKilled: removeWhenAppIsKilled,
+      staleIn: staleIn,
+    );
+  }
+
+  Future createOrUpdateAltActivity(
+    String customId,
+    Map<String, dynamic> data, {
+    bool removeWhenAppIsKilled = false,
+    Duration? staleIn,
+  }) async {
+    await _appGroupsFileService.sendFilesToAppGroups(data);
+    return LiveActivitiesPlatform.instance.createOrUpdateAltActivity(
+      customId,
+      data,
+      removeWhenAppIsKilled: removeWhenAppIsKilled,
+      staleIn: staleIn,
+    );
   }
 
   /// End an iOS 16.1+ live activity.
@@ -168,7 +230,7 @@ class LiveActivities {
   /// ```
   ///
   /// This feature is only available on iOS 17.2 and later. Use [allowsPushStart] to check support.
-  Stream<String> get pushToStartTokenUpdateStream  async* {
+  Stream<String> get pushToStartTokenUpdateStream async* {
     final allowed = await allowsPushStart();
 
     if (!allowed) {

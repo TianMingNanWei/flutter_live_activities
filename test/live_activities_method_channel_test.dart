@@ -42,6 +42,10 @@ void main() {
     expect(await platform.updateActivity('ACTIVITY_ID', {}), null);
   });
 
+  test('updateAltActivity', () async {
+    expect(await platform.updateAltActivity('ACTIVITY_ID', {}), null);
+  });
+
   test('endActivity', () async {
     expect(await platform.endActivity('ACTIVITY_ID'), null);
   });
