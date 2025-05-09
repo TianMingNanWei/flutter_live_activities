@@ -144,6 +144,11 @@ class MethodChannelLiveActivities extends LiveActivitiesPlatform {
   }
 
   @override
+  Future endAllAltActivities() async {
+    return methodChannel.invokeMethod('endAllAltActivities');
+  }
+
+  @override
   Future<List<String>> getAllActivitiesIds() async {
     final result = await methodChannel.invokeListMethod<String>(
       'getAllActivitiesIds',

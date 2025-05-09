@@ -157,6 +157,11 @@ class LiveActivities {
     return LiveActivitiesPlatform.instance.endAllActivities();
   }
 
+  /// End all iOS 16.1+ live activities.
+  Future endAllAltActivities() {
+    return LiveActivitiesPlatform.instance.endAllAltActivities();
+  }
+
   /// Get all iOS 16.1+ live activities and their state.
   Future<Map<String, LiveActivityState>> getAllActivities() {
     return LiveActivitiesPlatform.instance.getAllActivities();

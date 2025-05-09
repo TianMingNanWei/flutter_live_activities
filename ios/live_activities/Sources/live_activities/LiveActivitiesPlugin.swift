@@ -233,6 +233,9 @@ public class LiveActivitiesPlugin: NSObject, FlutterPlugin, FlutterStreamHandler
         case "endAllActivities":
           endAllActivities(result: result)
           break
+        case "endAllAltActivities":
+          endAllAltActivities(result: result)
+          break
         case "createOrUpdateActivity":
           initializationGuard(result: result)
           guard let args = call.arguments as? [String: Any] else {
@@ -529,6 +532,7 @@ public class LiveActivitiesPlugin: NSObject, FlutterPlugin, FlutterStreamHandler
     appLifecycleLiveActivityIds.removeAll { $0 == activityId }
     Task {
       await endActivitiesWithId(activityIds: [activityId])
+      await endAltActivitiesWithId(activityIds: [activityId])
       result(nil)
     }
   }
@@ -537,6 +541,17 @@ public class LiveActivitiesPlugin: NSObject, FlutterPlugin, FlutterStreamHandler
   func endAllActivities(result: @escaping FlutterResult) {
     Task {
       for activity in Activity<LiveActivitiesAppAttributes>.activities {
+        await activity.end(dismissalPolicy: .immediate)
+      }
+      appLifecycleLiveActivityIds.removeAll()
+      result(nil)
+    }
+  }
+
+  @available(iOS 16.1, *)
+  func endAllAltActivities(result: @escaping FlutterResult) {
+    Task {
+      for activity in Activity<LiveActivitiesAltAppAttributes>.activities {
         await activity.end(dismissalPolicy: .immediate)
       }
       appLifecycleLiveActivityIds.removeAll()
@@ -587,6 +602,15 @@ public class LiveActivitiesPlugin: NSObject, FlutterPlugin, FlutterStreamHandler
       }
     }
   }
+
+  @available(iOS 16.1, *)
+  private func endAltActivitiesWithId(activityIds: [String]) async {
+    for activity in Activity<LiveActivitiesAltAppAttributes>.activities {
+      if (activityIds.contains { $0 == activity.id }) {
+        await activity.end(dismissalPolicy: .immediate)
+      }
+    }
+  }
   
   public func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
     let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
@@ -614,6 +638,7 @@ public class LiveActivitiesPlugin: NSObject, FlutterPlugin, FlutterStreamHandler
     if #available(iOS 16.1, *) {
       Task {
         await self.endActivitiesWithId(activityIds: self.appLifecycleLiveActivityIds)
+        await self.endAltActivitiesWithId(activityIds: self.appLifecycleLiveActivityIds)
       }
     }
   }
@@ -646,6 +671,7 @@ public class LiveActivitiesPlugin: NSObject, FlutterPlugin, FlutterStreamHandler
       var holeNumber: String?
       var par: String?
       var dummy: String?
+      var isMarked: Bool?
     } 
 
     var id = UUID()
